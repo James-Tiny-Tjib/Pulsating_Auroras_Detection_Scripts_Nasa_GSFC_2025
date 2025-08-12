@@ -3,7 +3,67 @@ Space Club Scholar Intern Project 2025 - Detects and logs pulsating auroras from
 
 **Note: When copying file paths, add a "\" after every "\" to represent the backslash escape character. (E.g. "Data_Folder\ut02" -> "Data_Folder\\ut02")**
 
-# Input Data
+# Example Input Data (Relavent Portions; the program should ignore any unnecessary files)
+```
+Hard Drive/ <br>
+├── Day 1<br>
+│   ├── ut02 <br>
+|   |   ├── THA131208_02523649_16bit.log 
+|   |   ├── THA131208_02523649_16bit.tif 
+|   |   ├── THA131208_02523649_16bit_X2.tif 
+|   |   ├── THA131208_02523649_16bit_X3.tif 
+|   |   └── THA131208_02523649_16bit_X4.tif 
+│   ├── ut03 <br>
+|   |   ├── THA131208_02523649_16bit.log 
+|   |   ├── THA131208_02523649_16bit.tif 
+|   |   ├── THA131208_02523649_16bit_X2.tif 
+|   |   ├── THA131208_02523649_16bit_X3.tif 
+|   |   └── THA131208_02523649_16bit_X4.tif 
+│   └── ut04<br>
+|       ├── THA131208_02523649_16bit.log 
+|       ├── THA131208_02523649_16bit.tif 
+|       ├── THA131208_02523649_16bit_X2.tif 
+|       ├── THA131208_02523649_16bit_X3.tif 
+|       └── THA131208_02523649_16bit_X4.tif 
+├── Day 2<br>
+│   ├── ut02 <br>
+|   |   ├── THA131208_02523649_16bit.log 
+|   |   ├── THA131208_02523649_16bit.tif 
+|   |   ├── THA131208_02523649_16bit_X2.tif 
+|   |   ├── THA131208_02523649_16bit_X3.tif 
+|   |   └── THA131208_02523649_16bit_X4.tif 
+│   ├── ut03 <br>
+|   |   ├── THA131208_02523649_16bit.log 
+|   |   ├── THA131208_02523649_16bit.tif 
+|   |   ├── THA131208_02523649_16bit_X2.tif 
+|   |   ├── THA131208_02523649_16bit_X3.tif 
+|   |   └── THA131208_02523649_16bit_X4.tif 
+│   └── ut04<br>
+|       ├── THA131208_02523649_16bit.log 
+|       ├── THA131208_02523649_16bit.tif 
+|       ├── THA131208_02523649_16bit_X2.tif 
+|       ├── THA131208_02523649_16bit_X3.tif 
+|       └── THA131208_02523649_16bit_X4.tif 
+└── Day 3<br>
+    ├── ut02 <br>
+    |   ├── THA131208_02523649_16bit.log 
+    |   ├── THA131208_02523649_16bit.tif 
+    |   ├── THA131208_02523649_16bit_X2.tif 
+    |   ├── THA131208_02523649_16bit_X3.tif 
+    |   └── THA131208_02523649_16bit_X4.tif 
+    ├── ut03 <br>
+    |   ├── THA131208_02523649_16bit.log 
+    |   ├── THA131208_02523649_16bit.tif 
+    |   ├── THA131208_02523649_16bit_X2.tif  
+    |   ├── THA131208_02523649_16bit_X3.tif 
+    |   └── THA131208_02523649_16bit_X4.tif 
+    └── ut04<br>
+        ├── THA131208_02523649_16bit.log 
+        ├── THA131208_02523649_16bit.tif 
+        ├── THA131208_02523649_16bit_X2.tif 
+        ├── THA131208_02523649_16bit_X3.tif 
+        └── THA131208_02523649_16bit_X4.tif 
+```
 
 
 # analyzer.py (deprecated)
