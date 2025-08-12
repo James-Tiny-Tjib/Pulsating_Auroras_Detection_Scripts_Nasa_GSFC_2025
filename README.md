@@ -1,63 +1,65 @@
 # Pulsating_Auroras_Detection_Scripts_Nasa_GSFC_2025
 Space Club Scholar Intern Project 2025 - Detects and logs pulsating auroras from ground-based imager data of the sky.
 
-**Note: When copying file paths, add a "\" after every "\" to represent the backslash escape character. (E.g. "Data_Folder\ut02" -> "Data_Folder\\ut02")**
+**I highly recommend learning how to make a virtual environment so the downloaded packages don't interfere with other projects**
+
+**Note: When copying file paths, add a "\" after every "\" to represent the backslash escape character. (E.g. "Data_Folder\ut02" -> "Data_Folder\\ut02"), or you can replace "\" with "/"**
 
 # Example Input Data (Relavent Portions; the program should ignore any unnecessary files)
 ```
-Hard Drive/ <br>
-├── Day 1<br>
-│   ├── ut02 <br>
+Hard Drive/ 
+├── Day 1
+│   ├── ut02 
 |   |   ├── THA131208_02523649_16bit.log 
 |   |   ├── THA131208_02523649_16bit.tif 
 |   |   ├── THA131208_02523649_16bit_X2.tif 
 |   |   ├── THA131208_02523649_16bit_X3.tif 
 |   |   └── THA131208_02523649_16bit_X4.tif 
-│   ├── ut03 <br>
+│   ├── ut03 
 |   |   ├── THA131208_02523649_16bit.log 
 |   |   ├── THA131208_02523649_16bit.tif 
 |   |   ├── THA131208_02523649_16bit_X2.tif 
 |   |   ├── THA131208_02523649_16bit_X3.tif 
 |   |   └── THA131208_02523649_16bit_X4.tif 
-│   └── ut04<br>
+│   └── ut04
 |       ├── THA131208_02523649_16bit.log 
 |       ├── THA131208_02523649_16bit.tif 
 |       ├── THA131208_02523649_16bit_X2.tif 
 |       ├── THA131208_02523649_16bit_X3.tif 
 |       └── THA131208_02523649_16bit_X4.tif 
-├── Day 2<br>
-│   ├── ut02 <br>
+├── Day 2
+│   ├── ut02 
 |   |   ├── THA131208_02523649_16bit.log 
 |   |   ├── THA131208_02523649_16bit.tif 
 |   |   ├── THA131208_02523649_16bit_X2.tif 
 |   |   ├── THA131208_02523649_16bit_X3.tif 
 |   |   └── THA131208_02523649_16bit_X4.tif 
-│   ├── ut03 <br>
+│   ├── ut03 
 |   |   ├── THA131208_02523649_16bit.log 
 |   |   ├── THA131208_02523649_16bit.tif 
 |   |   ├── THA131208_02523649_16bit_X2.tif 
 |   |   ├── THA131208_02523649_16bit_X3.tif 
 |   |   └── THA131208_02523649_16bit_X4.tif 
-│   └── ut04<br>
+│   └── ut04
 |       ├── THA131208_02523649_16bit.log 
 |       ├── THA131208_02523649_16bit.tif 
 |       ├── THA131208_02523649_16bit_X2.tif 
 |       ├── THA131208_02523649_16bit_X3.tif 
 |       └── THA131208_02523649_16bit_X4.tif 
-└── Day 3<br>
-    ├── ut02 <br>
+└── Day 3
+    ├── ut02 
     |   ├── THA131208_02523649_16bit.log 
     |   ├── THA131208_02523649_16bit.tif 
     |   ├── THA131208_02523649_16bit_X2.tif 
     |   ├── THA131208_02523649_16bit_X3.tif 
     |   └── THA131208_02523649_16bit_X4.tif 
-    ├── ut03 <br>
+    ├── ut03
     |   ├── THA131208_02523649_16bit.log 
     |   ├── THA131208_02523649_16bit.tif 
     |   ├── THA131208_02523649_16bit_X2.tif  
     |   ├── THA131208_02523649_16bit_X3.tif 
     |   └── THA131208_02523649_16bit_X4.tif 
-    └── ut04<br>
+    └── ut04
         ├── THA131208_02523649_16bit.log 
         ├── THA131208_02523649_16bit.tif 
         ├── THA131208_02523649_16bit_X2.tif 
@@ -67,8 +69,7 @@ Hard Drive/ <br>
 
 
 # analyzer.py (deprecated)
-Description: A stand-alone menu-based program that takes an hour of data and creates keograms, time-intensity plots, and allows the user to watch a video ( and early implementation of a video player) given a start and end time. By setting a small interval , it can be useful for investigating details that are too small to see in the full-hour keogram. **This only works for the THA 2013-2014 data. You may need to change some values in order to use it for other datasets**<br>
-
+Description: A stand-alone menu-based program that takes an hour of data (take the folder_path of an individual hour) and creates keograms, time-intensity plots, and allows the user to watch a video (and early implementation of a video player) given a start and end time. By setting a small interval , it can be useful for investigating details that are too small to see in the full-hour keogram. **This only works for the THA 2013-2014 data. You may need to change some values in order to use it for other datasets**<br>
 Features:
 * Commented-out blocks for individual full-hour keograms (North-South & East-West) and time_intensity_plots. To use this, replace the folder_path var with the full file_path of the data you want to use
 *  Analyzer Function: menu-based function that has the following options (enter 1-7):
@@ -79,4 +80,19 @@ Features:
   5. View Time Intensity Plot (of set time interval)
   6. Reset to Default (reset start & end times to original time intervals)
   7. Quit (Exit Program)
+
+# full_day_keogram.py
+Description: Given a Day of Data (Folder Path for 1 day), create a keogram for that entire day as a .png <br>
+Variables:<br>
+* RAM_FOR_LARGE_TIFF = 2 - Set how many GB's of RAM required for 1 TIFF file. This assigns how many workers are use for parallel processing limits how much RAM is being used.
+* start_index, end_idex = 64,65 - Defines which row/column range to take from each frame
+* increment_by = 10 - Skip that amount of frames whil making a keogram
+* folder_path = "" - Set Day folder path to this variable
+* direction = "NS" or "EW" - NS gets columns, "EW" gets rows
+
+
+
+
+
+
 
