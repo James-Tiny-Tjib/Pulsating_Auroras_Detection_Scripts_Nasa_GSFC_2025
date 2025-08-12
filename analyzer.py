@@ -178,73 +178,6 @@ def plot_keogram(keogram_data, start_time, end_time):
     fig.tight_layout()
     plt.show()
 
-# def plot_both_keograms(ns_keogram_data, ew_keogram_data, start_time, end_time, return_min_max = False):
-#     """
-#     Plots the North-South and East-West keograms in a single window
-#     with a shared, dynamic time axis.
-#     """
-#     if return_min_max:
-#         vmin_ns = np.percentile(ns_keogram_data,5)
-#         vmax_ns = np.percentile(ns_keogram_data, 95)
-#         return vmin_ns, vmax_ns
-#     # 1. Create a figure with 2 vertically stacked subplots that share an X-axis
-#     fig, axes = plt.subplots(2, 1, figsize=(18, 10), sharex=True)
-
-#     # Convert datetime objects to Matplotlib's numerical format
-#     start_num = mdates.date2num(start_time)
-#     end_num = mdates.date2num(end_time)
-
-#     vmin_ns = np.percentile(ns_keogram_data,5)
-#     vmax_ns = np.percentile(ns_keogram_data, 95)
-
-#     vmin_ew = np.percentile(ew_keogram_data, 5)
-#     vmax_ew = np.percentile(ew_keogram_data, 95)
-
-#     # --- Plot on the TOP subplot (North-South) ---
-#     im_ns = axes[0].imshow(
-#         ns_keogram_data,
-#         aspect='auto',
-#         cmap='turbo',
-#         extent=[start_num, end_num, ns_keogram_data.shape[0], 0],
-#         vmin=vmin_ns, vmax=vmax_ns
-#     )
-#     axes[0].set_title("North-South Keogram")
-#     axes[0].set_ylabel("Spatial Slice Index")
-#     fig.colorbar(im_ns, ax=axes[0], label="Intensity")
-
-#     # --- Plot on the BOTTOM subplot (East-West) ---
-#     im_ew = axes[1].imshow(
-#         ew_keogram_data,
-#         aspect='auto',
-#         cmap='turbo',
-#         extent=[start_num, end_num, ew_keogram_data.shape[0], 0],
-#         vmin=vmin_ew, vmax=vmax_ew
-#     )
-#     axes[1].set_title("East-West Keogram")
-#     axes[1].set_ylabel("Spatial Slice Index")
-#     fig.colorbar(im_ew, ax=axes[1], label="Intensity")
-
-#     # --- Configure the SHARED X-axis (Time) ---
-#     duration_seconds = (end_time - start_time).total_seconds()
-#     if duration_seconds <= 600:
-#         interval_sec = max(1, round(duration_seconds / 10))
-#         locator = mdates.SecondLocator(interval=int(interval_sec))
-#         formatter = mdates.DateFormatter('%H:%M:%S')
-#     else:
-#         interval_min = max(1, round((duration_seconds / 60) / 12))
-#         locator = mdates.MinuteLocator(interval=int(interval_min))
-#         formatter = mdates.DateFormatter('%H:%M')
-    
-#     # Apply locator and formatter to the shared axis
-#     axes[1].xaxis.set_major_locator(locator)
-#     axes[1].xaxis.set_major_formatter(formatter)
-#     axes[1].set_xlabel("Time (UT)")
-
-#     # Add a main title for the entire figure
-#     fig.suptitle("Keogram Analysis", fontsize=16)
-    
-#     plt.tight_layout()
-#     plt.show()
 def plot_both_keograms(ns_keogram_data, ew_keogram_data, start_time, end_time, return_min_max = False):
     """
     Plots the North-South and East-West keograms in a single window
@@ -662,4 +595,5 @@ def main():
 
 if __name__ == "__main__":
     main()
+
 
