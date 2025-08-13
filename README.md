@@ -96,7 +96,7 @@ Variables:<br>
 ## `final_8_11_detection.py`
 
 ### Description
-This script contains the core logic for detecting aurora pulsations. **It is not intended for direct execution.** It functions as a module that is automatically called by `final_8_11_master_analysis.py`.
+This script contains the core logic for detecting aurora pulsations. It can be used as a stand-alone program (for 1 hour of data) and also functions as a module that is automatically called by `final_8_11_master_analysis.py`.
 
 ### Functionality Overview
 The script automates the process of pulsation detection through three stages:
@@ -120,7 +120,7 @@ These parameters are hardcoded within the `analyze_pulsations_with_grid` functio
 ## `final_8_11_detection_viewer.py`
 
 ### Description
-This script provides the interactive video player for visualizing analysis results. **It is not intended for direct execution.** It is launched automatically by `final_8_11_master_analysis.py`.
+This script provides the interactive video player for visualizing analysis results. It can be used as a stand-alone program (for 1 hour of data) and also functions like a module for `final_8_11_master_analysis.py`.
 
 ### Features
 * **Full Movie Player**: Plays the entire video sequence with an overlay of analysis regions. The regions change color to highlight detected pulsation events in real-time.
