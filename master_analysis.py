@@ -17,12 +17,12 @@ from datetime import datetime, timedelta
 
 # --- Import functions from your existing scripts ---
 try:
-    from final_detection import (
+    from detection import (
         run_parallel_for_grid, detect_peaks_in_grid, deduplicate_peaks,
         extract_text_from_log, get_start_end_time, generate_pulsation_plots,
         generate_full_timeseries_plots
     )
-    from final_detection_viewer import (
+    from detection_viewer import (
         build_frame_map as viewer_build_frame_map,
         calculate_vmin_vmax as calculate_vmin_vmax, 
         parse_pulsation_report,
@@ -420,3 +420,4 @@ if __name__ == '__main__':
             break
         else:
             print("Invalid choice. Please enter 1, 2, or Q.")
+
