@@ -160,47 +160,6 @@ def grouper(iterable, n):
             return
         yield chunk
 
-# def calculate_vmin_vmax_by_chunks(tiff_files, chunk_size=2):
-#     # Goal: Efficiently calculate image intensity limits (vmin/vmax) for color scaling without loading all files into memory at once.
-#     # Input: tiff_files (list of str), chunk_size (int)
-#     # Output: A tuple (vmin, vmax) containing the calculated percentile values (tuple of floats).
-#     print(f"Calculating vmin/vmax by loading {chunk_size} file(s) at a time...")
-
-#     reservoir_size = 100
-#     sample_frames = []
-#     frames_seen = 0
-
-#     for file_chunk in grouper(tiff_files, chunk_size):
-#         print(f"  Processing chunk: {[os.path.basename(f) for f in file_chunk]}")
-        
-#         chunk_frame_map, _ = build_frame_map(file_chunk)
-#         if not chunk_frame_map: continue
-        
-#         chunk_total_frames = sum(f['count'] for f in chunk_frame_map)
-#         chunk_frames = load_frames(0, chunk_total_frames, chunk_frame_map)
-
-#         # Apply Reservoir Sampling to get a representative sample of frames
-#         for i in range(chunk_frames.shape[0]):
-#             frame = chunk_frames[i]
-#             if frames_seen < reservoir_size:
-#                 sample_frames.append(frame)
-#             else:
-#                 j = np.random.randint(0, frames_seen + 1)
-#                 if j < reservoir_size:
-#                     sample_frames[j] = frame
-#             frames_seen += 1
-
-#     if not sample_frames:
-#         print("Error: Could not sample any frames.")
-#         return 0, 1
-    
-#     vmin = np.percentile(sample_frames, 5)
-#     vmax = np.percentile(sample_frames, 99.8)
-
-#     print(f"\nCalculation complete after seeing {frames_seen} frames.")
-#     print(f"Global vmin={vmin:.2f}, vmax={vmax:.2f}")
-#     return vmin, vmax
-
 def calculate_vmin_vmax(tiff_files, files_to_sample=5, frames_per_file=10):
     """
     Calculates vmin/vmax by picking random files from the dataset
@@ -710,3 +669,4 @@ if __name__ == '__main__':
     except (FileNotFoundError, ValueError, IOError) as e:
         print(f"\n--- ERROR ---")
         print(f"{e}")
+
