@@ -4,8 +4,8 @@ Author: James Hui
 Affiliation: River Hill High School, UMD
 Email: james.y.hui@gmail.com
 GitHub: https://github.com/James-Tiny-Tjib
-Date Created: 2025-01-06
-Last Updated: 2025-01-08
+Date Created: 2026-01-06
+Last Updated: 2026-01-08
 """
 
 import os
@@ -669,4 +669,5 @@ if __name__ == '__main__':
     except (FileNotFoundError, ValueError, IOError) as e:
         print(f"\n--- ERROR ---")
         print(f"{e}")
+
 
