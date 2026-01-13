@@ -4,8 +4,8 @@ Author: James Hui
 Affiliation: River Hill High School, UMD
 Email: james.y.hui@gmail.com
 GitHub: https://github.com/James-Tiny-Tjib
-Date Created: 2025-01-06
-Last Updated: 2025-01-06
+Date Created: 2026-01-06
+Last Updated: 2026-01-06
 """
 
 import tifffile
@@ -775,4 +775,5 @@ if __name__ == '__main__':
             print("Invalid Input. (y/n)")
 
     analyze_pulsations_with_grid(folder, output_folder, duplicates, find_max_in_bases, generate_plots)
+
 
