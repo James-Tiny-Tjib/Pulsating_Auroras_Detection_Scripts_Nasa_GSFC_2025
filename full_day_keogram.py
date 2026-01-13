@@ -1,3 +1,13 @@
+"""
+Title: Pulsating Aurora Auto-Detection Module
+Author: James Hui
+Affiliation: River Hill High School, UMD
+Email: james.y.hui@gmail.com
+GitHub: https://github.com/James-Tiny-Tjib
+Date Created: 2025-08-11
+Last Updated: 2026-01-13
+"""
+
 import tifffile
 import matplotlib.pyplot as plt
 import time
@@ -224,3 +234,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
