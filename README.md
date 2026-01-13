@@ -1,194 +1,159 @@
-# Pulsating_Auroras_Detection_Scripts_Nasa_GSFC_2025
-Space Club Scholar Intern Project 2025 - Detects and logs pulsating auroras from ground-based imager data of the sky.
+# Pulsating Auroras Detection Scripts (NASA GSFC 2025)
+**Space Club Scholar Intern Project 2025**
 
-**I highly recommend learning how to make a virtual environment so the downloaded packages don't interfere with other projects**
+This suite of tools is designed for the automated detection, logging, and visualization of pulsating auroras using ground-based imager data.
 
-**Note: When copying file paths, add a "\" after every "\" to represent the backslash escape character. (E.g. "Data_Folder\ut02" -> "Data_Folder\\ut02"), or replace "\" with "/"**
+> **Recommendation:** Use a virtual environment to manage dependencies.
+> **Path Note:** When configuring file paths, ensure backslashes are escaped (e.g., `Data_Folder\\ut02`) or use forward slashes (e.g., `Data_Folder/ut02`).
 
-# Example Input Data (Relavent Portions; the program should ignore any unnecessary files)
-```
-Hard Drive/ 
-├── Day 1
-│   ├── ut02 
-|   |   ├── THA131208_02523649_16bit.log 
-|   |   ├── THA131208_02523649_16bit.tif 
-|   |   ├── THA131208_02523649_16bit_X2.tif 
-|   |   ├── THA131208_02523649_16bit_X3.tif 
-|   |   └── THA131208_02523649_16bit_X4.tif 
-│   ├── ut03 
-|   |   ├── THA131208_02523649_16bit.log 
-|   |   ├── THA131208_02523649_16bit.tif 
-|   |   ├── THA131208_02523649_16bit_X2.tif 
-|   |   ├── THA131208_02523649_16bit_X3.tif 
-|   |   └── THA131208_02523649_16bit_X4.tif 
-│   └── ut04
-|       ├── THA131208_02523649_16bit.log 
-|       ├── THA131208_02523649_16bit.tif 
-|       ├── THA131208_02523649_16bit_X2.tif 
-|       ├── THA131208_02523649_16bit_X3.tif 
-|       └── THA131208_02523649_16bit_X4.tif 
-├── Day 2
-│   ├── ut02 
-|   |   ├── THA131208_02523649_16bit.log 
-|   |   ├── THA131208_02523649_16bit.tif 
-|   |   ├── THA131208_02523649_16bit_X2.tif 
-|   |   ├── THA131208_02523649_16bit_X3.tif 
-|   |   └── THA131208_02523649_16bit_X4.tif 
-│   ├── ut03 
-|   |   ├── THA131208_02523649_16bit.log 
-|   |   ├── THA131208_02523649_16bit.tif 
-|   |   ├── THA131208_02523649_16bit_X2.tif 
-|   |   ├── THA131208_02523649_16bit_X3.tif 
-|   |   └── THA131208_02523649_16bit_X4.tif 
-│   └── ut04
-|       ├── THA131208_02523649_16bit.log 
-|       ├── THA131208_02523649_16bit.tif 
-|       ├── THA131208_02523649_16bit_X2.tif 
-|       ├── THA131208_02523649_16bit_X3.tif 
-|       └── THA131208_02523649_16bit_X4.tif 
-└── Day 3
-    ├── ut02 
-    |   ├── THA131208_02523649_16bit.log 
-    |   ├── THA131208_02523649_16bit.tif 
-    |   ├── THA131208_02523649_16bit_X2.tif 
-    |   ├── THA131208_02523649_16bit_X3.tif 
-    |   └── THA131208_02523649_16bit_X4.tif 
-    ├── ut03
-    |   ├── THA131208_02523649_16bit.log 
-    |   ├── THA131208_02523649_16bit.tif 
-    |   ├── THA131208_02523649_16bit_X2.tif  
-    |   ├── THA131208_02523649_16bit_X3.tif 
-    |   └── THA131208_02523649_16bit_X4.tif 
-    └── ut04
-        ├── THA131208_02523649_16bit.log 
-        ├── THA131208_02523649_16bit.tif 
-        ├── THA131208_02523649_16bit_X2.tif 
-        ├── THA131208_02523649_16bit_X3.tif 
-        └── THA131208_02523649_16bit_X4.tif 
+## Project Directory Structure
+All Python scripts should be located in the same root directory. The data directory (`Big_Data`) can be located elsewhere, provided the paths in the scripts are updated.
+
+```text
+Project_Root/
+│
+├── master_analysis.py         # Main controller for batch analysis
+├── detection.py               # Core detection algorithms
+├── detection_viewer.py        # Interactive results viewer
+├── investigation2.py          # Viewer with manual annotation tools
+├── full_day_keogram.py        # Keogram generation tool
+├── analyzer.py                # Legacy analysis tool
+│
+└── Big_Data/                  # Example Data Structure
+    ├── Day 1/
+    │   ├── ut02/
+    │   │   ├── THA...16bit.log
+    │   │   ├── THA...16bit.tif
+    │   │   └── ...
+    │   └── ut03/
+    └── Day 2/
+
 ```
 
+---
 
-# analyzer.py (deprecated)
-Description: A stand-alone menu-based program that takes an hour of data (take the folder_path of an individual hour) and creates keograms, time-intensity plots, and allows the user to watch a video (and early implementation of a video player) given a start and end time. By setting a small interval , it can be useful for investigating details that are too small to see in the full-hour keogram. **This only works for the THA 2013-2014 data. Some values may need to change in order to use it for other datasets**<br>
-Features:
-* Commented-out blocks for individual full-hour keograms (North-South & East-West) and time_intensity_plots. To use this, replace the folder_path var with the full file_path of the data 
-*  Analyzer Function: menu-based function that has the following options (enter 1-7):
-  1. Edit Start Time (Enter in the form HH:MM:SS.ms e.g. 16:26:40.123)
-  2. Edit End Time (Enter in the form HH:MM:SS.ms e.g 16:28:00.0)
-  3. View Video (of set time interval, video player controls printed in console)
-  4. View Keogram (Create a NS & EW keogram of set time interval)
-  5. View Time Intensity Plot (of set time interval)
-  6. Reset to Default (reset start & end times to original time intervals)
-  7. Quit (Exit Program)
+## 1. `master_analysis.py`
 
-# full_day_keogram.py
-Description: Given a Day of Data (Folder Path for 1 day), create a keogram for that entire day as a .png <br>
-Variables:<br>
-* RAM_FOR_LARGE_TIFF = 2 - Set how many GB's of RAM required for 1 TIFF file. This assigns how many workers are use for parallel processing limits how much RAM is being used.
-* start_index, end_idex = 64,65 - Defines which row/column range to take from each frame
-* increment_by = 10 - Skip that amount of frames whil making a keogram
-* folder_path = "" - Set Day folder path to this variable
-* direction = "NS" or "EW" - NS gets columns, "EW" gets rows
-  
-## `final_8_11_detection.py`
+**Description:**
+The primary entry point for the suite. It orchestrates large-scale batch processing across multiple days of data and provides a menu to launch the interactive viewer for specific results.
 
-### Description
-This script contains the core logic for detecting aurora pulsations. It can be used as a stand-alone program (for 1 hour of data) and also functions as a module that is automatically called by `final_8_11_master_analysis.py`.
+**Features:**
 
-### Functionality Overview
-The script automates the process of pulsation detection through three stages:
-1.  **Data Extraction**: Extracts average intensity time-series from regions in the image data.
-2.  **Peak Detection**: Applies smoothing filters and algorithms to identify statistically significant peaks in the time-series data.
-3.  **Vetting and Filtering**: Filters candidate peaks based on their properties (e.g., duration, sharpness) and merges nearby detections corresponding to the same event.
+* **Batch Analysis (Option 1):** Scans the parent data directory, processes all valid subdirectories, and generates reports and plots.
+* **Viewer Integration (Option 2):** Launches `detection_viewer.py` for a user-specified dataset.
 
-### Configurable Parameters (`analyze_pulsations_with_grid` function)
-These parameters are hardcoded within the `analyze_pulsations_with_grid` function for standalone testing. When used as part of the suite, these values are overridden by the `CONFIG` dictionary in the master script.
-* `FPS`: Frames per second of the source data.
-* `NORMAL_PROMINENCE`: Main sensitivity for peak detection.
-* `REDUCED_PROMINENCE`: Lowered sensitivity for peaks on bright backgrounds.
-* `PIXEL_SIZE`: Side length of the analysis grid boxes.
-* `HIGH_BASE_THRESHOLD`: Intensity level defining a "bright" background.
-* `IMAGE_SIZE`: Dimensions of the image frames, e.g., `(128, 128)`.
-* `GRID_DIMENSIONS`: Analysis grid layout, e.g., `(6, 6)`.
-* `SIGMA_CLIP_THRESHOLD`: Value for robust outlier rejection.
-* `MAX_PULSATION_SECONDS`: Maximum allowed duration of a pulsation.
-* `MIN_PROMINENCE_WIDTH_RATIO`: Sharpness filter for pulsations.
+**Configurable Parameters:**
 
-## `final_8_11_detection_viewer.py`
-
-### Description
-This script provides the interactive video player for visualizing analysis results. It can be used as a stand-alone program (for 1 hour of data) and also functions like a module for `final_8_11_master_analysis.py`.
-
-### Features
-* **Full Movie Player**: Plays the entire video sequence with an overlay of analysis regions. The regions change color to highlight detected pulsation events in real-time.
-* **Individual Pulsation Player**: Steps through each detected event one by one, playing a short clip for each.
-* **Keyboard Controls**:
-    * `Spacebar`: Pause or resume playback.
-    * `r`: Rewind the video to the beginning.
-    * `x`: Cycle through playback speeds.
-    * `→` / `←`: Skip forward or backward (Full Movie Player only).
-
-### Configurable Parameters (`if __name__ == '__main__'` block)
-These parameters are available for standalone testing of the viewer.
-* `DATA_FOLDER`: Path to the hourly data directory to be viewed.
-* `REPORT_FILE`: Path to the `pulsation_report_grid.txt` file corresponding to the data.
-* `BUFFER_SIZE`: Number of frames to hold in memory for smooth playback.
-* `IMAGE_SIZE`: Dimensions of the image frames; must match the analysis script.
-* `PIXEL_SIZE`: Size of the grid boxes; must match the analysis script.
-
-## `final_8_11_detection_viewer_with_investigation.py`
-
-### Description
-This is an alternate version of the viewer that adds an **Investigation Mode**. This mode enables manual event marking during playback for a targeted follow-up analysis.
-
-### How to Use
-1.  **Enable Viewer**: To use this version, open `final_8_11_master_analysis.py` and set the `viewer_script_name` variable to `"final_8_11_detection_viewer_with_investigation.py"`.
-2.  **Mark Events**: During playback in the Full Movie Player, **click inside any grid box** to mark that location and time as an event of interest. A confirmation will be printed to the console.
-3.  **Run Analysis**: After closing the player window, a detailed analysis will run automatically on all marked events.
-
-### Player Controls
-Standard player controls (`Spacebar`, `r`, `x`, arrow keys) are identical to the standard viewer. The only added interaction is mouse-clicking to mark events.
-
-### Outputs
-Using the investigation mode generates new files:
-* **`manual_analysis_plots/` folder**: A new directory containing detailed plots for each manually marked event.
-* **`manual_analysis_log.txt`**: A text report summarizing the quantitative findings for all marked events.
-
-## `final_8_11_master_analysis.py`
-
-### Description
-This script is the main controller for the Pulsation Analysis and Visualization Suite. It provides a menu to run a large-scale batch analysis on a dataset or to launch an interactive viewer for inspecting results.
-
-### Operation
-1.  **Parameter Configuration**: All operational parameters are located in the `CONFIG` dictionary at the top of the script. This section must be reviewed and edited before execution.
-2.  **Execution**: The script is run from the command line: `python final_8_11_master_analysis.py`.
-3.  **Mode Selection**: A menu will appear with two options:
-    * **1. Run Batch Analysis**: Processes all data found in the `parent_data_directory`, generating reports and plots.
-    * **2. Launch Interactive Viewer**: After an analysis is complete, this mode can be used to visually inspect the results for a specific hour of data.
-
-### Tunable Variables (`CONFIG` Dictionary)
-* `analysis_script_name`: The `.py` file containing the core detection logic.
-* `viewer_script_name`: The `.py` file for the viewer. Change to `final_8_11_detection_viewer_with_investigation.py` to enable investigation mode.
-* `parent_data_directory`: The file path to the root folder containing the day/hour data subdirectories.
-* `main_output_folder`: The name of the directory where all analysis results will be saved.
-* `keep_duplicates`: If `False`, nearby detections are merged into a single event. If `True`, all detections are kept.
-* `generate_individual_plots`: If `True`, a detailed plot is created for each detected pulsation.
-* `generate_full_region_plots`: If `True`, a summary plot of the full time-series is created for each grid region.
-* `use_true_peaks`: If `True`, the peak intensity is determined from the absolute maximum in the raw data.
-* `fps`: The frame rate (frames per second) of the source data.
-* `grid_dimensions`: The number of rows and columns in the analysis grid (e.g., `(6, 6)`).
-* `pixel_size`: The side length in pixels of the square analysis boxes.
-* `sigma_clip_threshold`: The sigma value for outlier rejection during data extraction.
-* `normal_prominence`: The primary sensitivity threshold for peak detection. Higher values detect more intense events.
-* `reduced_prominence`: A lower sensitivity threshold for detecting peaks on an already bright background.
-* `high_base_threshold`: The intensity level that defines a "bright" background.
-* `max_pulsation_seconds`: The maximum allowed duration in seconds for a valid pulsation event.
-* `min_prominence_width_ratio`: A sharpness filter (`prominence / width`) to exclude events that are not sufficiently "spiky".
-
-### Outputs
-* A main output folder containing a structured hierarchy of results by day and hour.
-* For each processed hour, a text report and corresponding plot folders are generated.
-* A `master_pulsation_report.txt` file is created, aggregating all detections from the entire analysis.
+* `PARENT_DATA_DIRECTORY`: (String) The root folder containing day/hour subdirectories (e.g., `"Big_Data"`).
+* `MAIN_OUTPUT_FOLDER`: (String) The destination folder for all analysis reports and plots.
+* `CONFIG` Dictionary:
+* `keep_duplicates`: (Bool) `True` to keep all detections; `False` to merge adjacent detections (recommended).
+* `generate_individual_plots`: (Bool) `True` to generate PNGs for every detected event.
+* `generate_full_region_plots`: (Bool) `True` to generate full time-series plots for every grid region.
+* `use_true_peaks`: (Bool) `True` to use the raw data maximum for peak intensity; `False` to use the smoothed value.
 
 
 
+---
+
+## 2. `detection.py`
+
+**Description:**
+The core module containing the algorithms for identifying pulsating auroras. It runs as a library for the master script but can be executed standalone for single-hour debugging.
+
+**Features:**
+
+* **Grid Extraction:** Extracts intensity time-series from 36 regions (6x6 grid) within the raw TIFF images.
+* **Parallel Processing:** Uses CPU cores to process multiple regions or files simultaneously.
+* **Peak Detection:** Uses Savitzky-Golay filtering and dynamic prominence thresholding to find pulsations.
+
+**Configurable Parameters (inside `analyze_pulsations_with_grid`):**
+
+* `FPS`: (Float) Frames per second of the source data (e.g., `56.7`).
+* `PIXEL_SIZE`: (Int) Dimension of the square analysis box in pixels (e.g., `6`).
+* `GRID_DIMENSIONS`: (Tuple) Layout of the analysis grid (rows, cols) (e.g., `(6, 6)`).
+* `IMAGE_SIZE`: (Tuple) Resolution of the input images (e.g., `(128, 128)`).
+* `NORMAL_PROMINENCE`: (Int) Primary intensity threshold for peak detection (e.g., `80`).
+* `REDUCED_PROMINENCE`: (Int) Lower threshold for peaks occurring on bright backgrounds (e.g., `30`).
+* `HIGH_BASE_THRESHOLD`: (Int) Intensity level defining a "bright" background (e.g., `900`).
+* `SIGMA_CLIP_THRESHOLD`: (Int) Sigma value for outlier rejection during data extraction (e.g., `2`).
+* `MAX_PULSATION_SECONDS`: (Float) Max duration for a valid event (e.g., `30.0`).
+* `MIN_PROMINENCE_WIDTH_RATIO`: (Float) Sharpness filter; higher excludes wider/slower pulses.
+
+---
+
+## 3. `detection_viewer.py`
+
+**Description:**
+An interactive visualization tool for inspecting analysis results. It renders the original high-bit depth TIFF data and overlays detection metrics.
+
+**Features:**
+
+* **Full Movie Player:** Plays the full image sequence with real-time color-coded overlays (Red=Inactive, Yellow=Active, Lime=Peak).
+* **Interval Player:** Targeted playback of specific detected events.
+* **Video Export:** Exports specific pulsation events to MP4 with custom speed and annotations.
+
+**Configurable Parameters (in `if __name__ == '__main__':`):**
+
+* `DATA_FOLDER`: (String) Path to the specific hour directory to view (e.g., `"Big_Data\\Day_1\\ut15"`).
+* `REPORT_FILE`: (String) Path to the `..._report.txt` generated by the analysis.
+* `BUFFER_SIZE`: (Int) Number of frames to preload for smooth playback (e.g., `1000`).
+* `FPS`: (Float) Frame rate for time calculations (e.g., `56.7`).
+
+---
+
+## 4. `investigation2.py`
+
+**Description:**
+An enhanced viewer featuring a **Manual Investigation Mode**. It allows users to annotate events during playback for targeted sub-region analysis.
+
+**Features:**
+
+* **Manual Annotation:** Click on grid regions during playback to mark events.
+* **Automated Follow-up:** Automatically performs analysis on marked frames upon closing the player.
+* **Logging:** Generates a separate `manual_analysis_log.txt`.
+
+**Configurable Parameters (in `if __name__ == '__main__':`):**
+
+* `DATA_FOLDER`: (String) Path to the data directory.
+* `REPORT_FILE`: (String) Path to an existing report file (optional, can be dummy path if just investigating).
+* `BUFFER_SIZE`: (Int) Playback buffer size.
+* `IMAGE_SIZE` / `PIXEL_SIZE`: (Int) Must match the settings used in `detection.py`.
+
+---
+
+## 5. `full_day_keogram.py`
+
+**Description:**
+Generates a full-day Keogram (North-South or East-West spectral slice) from a directory containing multiple hours of data.
+
+**Features:**
+
+* **Mega-Keogram:** Stitches together data from separate hourly folders into one continuous plot.
+* **Parallel Loading:** optimized to handle large datasets without crashing memory.
+
+**Configurable Parameters (in `main`):**
+
+* `RAM_FOR_LARGE_TIFF`: (Int) GB of RAM estimate per file to limit worker count (e.g., `2`).
+* `folder_path`: (String) Path to the Day folder (e.g., `"Big_Data\\Day_1"`).
+* `direction`: (String) `"NS"` for North-South (columns) or `"EW"` for East-West (rows).
+* `start_index` / `end_index`: (Int) The row/column indices to slice (e.g., `64`, `65`).
+* `increment_by`: (Int) Skip frames to reduce processing time (e.g., `10`).
+
+---
+
+## 6. `analyzer.py` (Legacy)
+
+**Description:**
+A standalone menu-driven tool for investigating fine details in specific hours of data.
+
+**Features:**
+
+* **Time Editing:** Interactively refine start and end times for analysis.
+* **Visualizations:** Generates Keograms and Time-Intensity plots for the defined window.
+* **Basic Playback:** Simple image sequence player.
+
+**Configurable Parameters:**
+
+* `folder_path`: (String) Hardcoded path in `main` pointing to the hour directory (e.g., `"Big_Data/Day_1/ut02"`).
+* `get_col_6166` / `get_row_6166`: (Functions) The slice indices (default 61-67) are hardcoded in these functions and must be edited manually if different regions are needed.
