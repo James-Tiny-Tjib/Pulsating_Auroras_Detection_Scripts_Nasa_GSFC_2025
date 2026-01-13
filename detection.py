@@ -67,59 +67,6 @@ def generate_grid_regions(grid_dims, image_size, box_size):
             
     return regions
 
-# def get_grid_averages(filepath, pixel_size, regions, sigma_clip_threshold, MAD=True):
-#     # Goal: Calculate the average intensity time series for all regions within a single TIFF file, with optional outlier rejection.
-#     # Input: filepath (str), pixel_size (int), regions (list of tuples), sigma_clip_threshold (int), MAD (bool)
-#     # Output: A tuple containing (grid_averages, filepath).
-#     #         - grid_averages: A list of 1D NumPy arrays. The list has `len(regions)` elements. Each array contains the intensity time series for one region within the file.
-#     #         - filepath: The original filepath (str).
-#     try:
-#         image_stack = tifffile.imread(filepath)
-#         num_frames = image_stack.shape[0]
-#         num_regions = len(regions)
-        
-#         # 1. Create TWO arrays instead of one
-#         grid_averages_mad = [np.zeros(num_frames) for _ in range(num_regions)]
-#         grid_averages_raw = [np.zeros(num_frames) for _ in range(num_regions)] # <--- NEW
-
-#         if MAD:
-#             for i, (r, c) in enumerate(regions):
-#                 region_stack = image_stack[:, r:r+pixel_size, c:c+pixel_size]
-                
-#                 for frame_idx in range(num_frames):
-#                     frame_data = region_stack[frame_idx, :, :]
-                    
-#                     # 2. ALWAYS calculate Raw Mean first
-#                     grid_averages_raw[i][frame_idx] = np.mean(frame_data) # <--- NEW
-                    
-#                     # --- ROBUST OUTLIER REJECTION LOGIC (For MAD Array) ---
-#                     median_val = np.median(frame_data)
-#                     mad = np.median(np.abs(frame_data - median_val))
-                    
-#                     if mad == 0:
-#                         grid_averages_mad[i][frame_idx] = median_val
-#                         continue
-
-#                     threshold = median_val + sigma_clip_threshold * mad * 1.4826
-#                     valid_pixels = frame_data[frame_data < threshold]
-                    
-#                     if valid_pixels.size > 0:
-#                         grid_averages_mad[i][frame_idx] = np.mean(valid_pixels)
-#                     else:
-#                         grid_averages_mad[i][frame_idx] = median_val 
-#         else:
-#             for i, (r, c) in enumerate(regions):
-#                 subset = image_stack[:, r:r+pixel_size, c:c+pixel_size]
-#                 mean_val = np.mean(subset, axis=(1, 2))
-#                 grid_averages_mad[i] = mean_val
-#                 grid_averages_raw[i] = mean_val # If MAD is off, they are the same
-
-#         # 3. Return BOTH arrays
-#         return grid_averages_mad, grid_averages_raw, filepath 
-#     except Exception as e:
-#         print(f"Error processing {os.path.basename(filepath)}: {e}")
-#         return None
-
 def get_grid_averages(filepath, pixel_size, regions, sigma_clip_threshold, MAD=True):
     try:
         # Load the entire stack (T, H, W)
@@ -278,91 +225,6 @@ def calculate_fwhm(raw_data, smoothed_data, peak_idx, prominence):
     if right_idx_interpolated == -1: return -1, -1, -1
 
     return right_idx_interpolated - left_idx_interpolated, left_idx_interpolated, right_idx_interpolated
-
-# def detect_peaks_in_grid(grid_timeseries, params, frame_to_file_map):
-#     # Goal: Detect and filter peaks in each region's time series using smoothing and dynamic prominence criteria.
-#     # Input: grid_timeseries (list of 1D np.arrays), params (tuple), frame_to_file_map (list of str)
-#     # Output: A list of dictionaries, where each dictionary contains detailed properties of a valid detected peak (list of dict).
-#     all_detected_peaks = []
-    
-#     normal_prominence, reduced_prominence, high_base_threshold, fps, find_max, max_width_sec, min_prom_ratio = params
-
-#     initial_peak_count = 0
-#     rejected_by_low_prom = 0
-#     rejected_by_ratio = 0
-
-#     for i, intensity_data in enumerate(grid_timeseries):
-#         smoothing_window = 51
-#         if smoothing_window >= len(intensity_data):
-#             smoothing_window = len(intensity_data) - 1
-#         if smoothing_window % 2 == 0: smoothing_window -=1
-#         if smoothing_window < 3: continue
-
-#         smoothed_data = savgol_filter(intensity_data, smoothing_window, 3)
-        
-#         min_width_samples = int(0.2 * fps) 
-#         max_width_samples = int(max_width_sec * fps)
-
-#         # --- DYNAMIC PROMINENCE LOGIC ---
-#         # 1. Find all peaks that meet the lower, 'reduced_prominence' threshold.
-#         peaks, props = find_peaks(
-#             smoothed_data, 
-#             prominence=reduced_prominence, 
-#             width=(min_width_samples, max_width_samples),
-#             wlen=600
-#         )
-#         initial_peak_count += len(peaks)
-        
-#         for j, peak_idx_savgol in enumerate(peaks):
-#             # 2. Check the base intensity of each potential peak.
-#             base_level = (smoothed_data[props["left_bases"][j]] + smoothed_data[props["right_bases"][j]]) / 2
-#             actual_prominence = props["prominences"][j]
-
-#             fwhm_frames, left_fwhm_idx, right_fwhm_idx = calculate_fwhm(
-#                 intensity_data, smoothed_data, peak_idx_savgol, actual_prominence
-#             )
-#             fwhm_sec = fwhm_frames / fps if fwhm_frames > 0 else 0.0
-
-#             # 3. If the base is not on a bright background, it must meet the higher 'normal_prominence'.
-#             if base_level < high_base_threshold and actual_prominence < normal_prominence:
-#                 rejected_by_low_prom += 1
-#                 continue
-            
-#             start_frame = props["left_bases"][j]
-#             end_frame = props["right_bases"][j]
-#             width = end_frame - start_frame
-#             if width > 0 and (actual_prominence / width) < min_prom_ratio:
-#                 rejected_by_ratio += 1
-#                 continue
-            
-#             peak_idx = peak_idx_savgol
-#             if find_max:
-#                 search_slice = intensity_data[start_frame : end_frame + 1]
-#                 if search_slice.size > 0:
-#                     local_max_idx = np.argmax(search_slice)
-#                     peak_idx = start_frame + local_max_idx
-            
-#             final_intensity_at_peak = intensity_data[peak_idx]
-#             source_file = frame_to_file_map[peak_idx]
-
-#             all_detected_peaks.append({
-#                 "index": peak_idx,
-#                 "intensity": final_intensity_at_peak,
-#                 "prominence": actual_prominence,
-#                 "start_index": start_frame,
-#                 "end_index": end_frame,
-#                 "region": i,
-#                 "source_file": source_file,
-#                 "fwhm_sec": fwhm_sec,
-#                 "left_fwhm_idx": left_fwhm_idx,
-#                 "right_fwhm_idx": right_fwhm_idx
-#             })
-    
-#     print(f"Initial candidates found: {initial_peak_count}")
-#     print(f"Rejected by dynamic prominence filter: {rejected_by_low_prom}")
-#     print(f"Rejected by sharpness filter: {rejected_by_ratio}")
-#     print(f"Final valid peaks found: {len(all_detected_peaks)}")
-#     return all_detected_peaks
 
 def detect_peaks_for_region(args):
     """
@@ -712,85 +574,6 @@ def generate_full_timeseries_plots(final_peaks, grid_timeseries, start_time, fps
 
     print(f"Full timeseries plots saved to '{full_plots_folder}'.")
 
-# def generate_pulsation_plots(final_peaks, grid_timeseries, start_time, fps, output_folder):
-#     # Goal: Generate and save a detailed plot for each individual detected pulsation event.
-#     # Input: final_peaks (list of dict), grid_timeseries (list of np.array), start_time (datetime), fps (float), output_folder (str)
-#     # Output: None. Saves PNG plot files to the specified output folder.
-#     if not final_peaks:
-#         return
-        
-#     print(f"\nGenerating {len(final_peaks)} individual pulsation plots...")
-#     os.makedirs(output_folder, exist_ok=True)
-    
-#     frame_buffer = 50
-
-#     for peak in final_peaks:
-#         region_idx = peak["region"]
-#         intensity_data = grid_timeseries[region_idx]
-        
-#         start_frame = peak["start_index"]
-#         end_frame = peak["end_index"]
-
-#         plot_start_index = max(0, start_frame - frame_buffer)
-#         plot_end_index = min(len(intensity_data), end_frame + frame_buffer)
-        
-#         plot_data = intensity_data[plot_start_index:plot_end_index]
-#         plot_time_objects = [start_time + timedelta(seconds=i/fps) for i in range(plot_start_index, plot_end_index)]
-        
-#         fig, ax = plt.subplots(figsize=(10, 5))
-#         ax.plot(plot_time_objects, plot_data, label=f'Region {region_idx} Intensity', zorder=1.5, linewidth=2 )
-        
-#         plot_smoothing_window = 51
-#         if plot_smoothing_window >= len(plot_data):
-#             plot_smoothing_window = len(plot_data) - 1
-#         if plot_smoothing_window % 2 == 0: plot_smoothing_window -= 1
-#         if plot_smoothing_window > 2:
-#             smoothed_plot_data = savgol_filter(plot_data, plot_smoothing_window, 3)
-#             ax.plot(plot_time_objects, smoothed_plot_data, label='Smoothed Data', color='orange', linestyle=':', zorder=2)
-
-#         peak_time = start_time + timedelta(seconds=peak["index"] / fps)
-#         peak_intensity_raw = peak["intensity"] 
-#         ax.plot(peak_time, peak_intensity_raw, 'x', color='red', markersize=10, mew=2, label=f'Peak', zorder=3)
-        
-#         start_peak_time = start_time + timedelta(seconds=start_frame / fps)
-#         end_peak_time = start_time + timedelta(seconds=end_frame / fps)
-        
-#         ax.axvline(x=start_peak_time, color='green', linestyle='--', label='Peak Start/End', zorder=1)
-#         ax.axvline(x=end_peak_time, color='green', linestyle='--', zorder=1)
-        
-#         # --- FWHM Visualization ---
-#         if peak.get("fwhm_sec", 0) > 0 and peak.get("left_fwhm_idx", -1) != -1:
-#             peak_idx_local = peak["index"] - plot_start_index
-            
-#             if 'smoothed_plot_data' in locals() and 0 <= peak_idx_local < len(smoothed_plot_data):
-#                 peak_value_smoothed = smoothed_plot_data[peak_idx_local]
-#                 half_height = peak_value_smoothed - (peak["prominence"] / 2)
-
-#                 left_fwhm_time = start_time + timedelta(seconds=peak["left_fwhm_idx"] / fps)
-#                 right_fwhm_time = start_time + timedelta(seconds=peak["right_fwhm_idx"] / fps)
-
-#                 ax.hlines(y=half_height, xmin=left_fwhm_time, xmax=right_fwhm_time,
-#                           color='purple', linestyle='--', label=f'FWHM ({peak["fwhm_sec"]:.2f}s)')
-#                 ax.plot([left_fwhm_time, right_fwhm_time], [half_height, half_height], 'o', color='purple')
-
-#         ax.set_title(f"Pulsation Detected in Region {region_idx}")
-#         ax.set_xlabel("Time (UT)")
-#         ax.set_ylabel("Average Intensity")
-#         ax.grid(True, alpha=0.3)
-#         ax.legend()
-#         ax.xaxis.set_major_formatter(mdates.DateFormatter('%H:%M:%S.%f'))
-#         plt.xticks(rotation=30)
-#         fig.tight_layout()
-        
-#         source_filename = os.path.basename(peak["source_file"])
-#         tiff_id = source_filename[3:10]
-#         filename = f"F_{tiff_id}_{peak_time.strftime('%H_%M_%S_%f')[:-4]}_{region_idx}.png"
-#         save_path = os.path.join(output_folder, filename)
-#         fig.savefig(save_path)
-#         plt.close(fig)
-        
-#     print("Plot generation complete.")
-
 def plot_single_pulsation_worker(peak, grid_timeseries, start_time, fps, output_folder):
     """
     Worker function that generates a plot for one individual pulsation event.
@@ -992,3 +775,4 @@ if __name__ == '__main__':
             print("Invalid Input. (y/n)")
 
     analyze_pulsations_with_grid(folder, output_folder, duplicates, find_max_in_bases, generate_plots)
+
